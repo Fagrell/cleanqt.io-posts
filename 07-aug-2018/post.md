@@ -1,4 +1,6 @@
-# Qt Containers
+# Exploring Qt Containers
+
+__Blog post published on [cleanqt.io](www.cleanqt.io)__ 
 
 The following post will dive into the world of containers and explore the ones Qt provides and how they compare to the standard library's (STL). The post will cover the different types and which ones are unique to each library. API, performance and some internal implementation details will also be covered. The goal of the post is to identify which library might be preferred over the other.
 
@@ -165,7 +167,7 @@ Although the Qt containers have quite a few additional features they also lack s
 * It's not possible to use a custom allocator in any of the Qt containers. 
 * None of the C++11 (or above) features/API have been implemented such as `emplace()` or rvalue-`push_back()`.
 * No exception handling.
-* The types must implement the default constructor and copy-constructor in order to be used in a Qt container.
+* The types must implement a default constructor, a copy-constructor and an assignment operator in order to be used in a Qt container.
 * Move-only types are not (and will never be) supported because of Qt containers' principle of implicit sharing (see below for details about implicit sharing).
 
 ## Implicit sharing
@@ -222,9 +224,9 @@ My recommendation is to use the STL containers as your deault containers for the
 * There are subtle bugs that might be difficult to find because of the implicit sharing.
 * The STL containers are usually implemented by the same people who implement the C++ compiler and are therefore most likely better optimised.
 
-However, if you prefer the Qt API and are aware of their drawbacks, I personally don't believe that they are much worse than their STL counterparts.
+However, if you prefer the Qt API and are aware of their drawbacks, I personally don't believe that they are much worse than their STL counterparts. If you decide to use the Qt containers you should also be aware of the [type classification](https://marcmutz.wordpress.com/effective-qt/containers/#diff-qtypeinfo) of your own types and how it affects the performance when using them in the containers.
 
-Also, some of Qt's API returns Qt containers (`QStringList` is very common) and in those cases I recommend to avoid converting it to a STL counterpart.
+Lastly, some of Qt's API returns Qt containers (`QStringList` is very common) and in those cases I recommend to avoid converting it to a STL counterpart.
 
 ## Read more
 * [Qt's official documentation on the containers](http://doc.qt.io/qt-5/containers.html)
