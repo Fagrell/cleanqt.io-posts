@@ -74,9 +74,9 @@ The official documentation recommended developer to use QList as the 'default' c
 
 Note that `QSet's` STL counterpart is `std::unordered_set` and not `std::set`.
 
-#####Algorithmic Complexity
-| Type | Key Access | | Insertion | 
-| --- | --- | --- | --- | --- | --- |
+##### Algorithmic Complexity
+| Type | | Key Access | | Insertion | 
+| --- | --- | --- | --- | --- |
 | | __Average__ | __Worst Case__ | __Average__ | __Worst Case__ |
 | `QMap` | O(log n) | O(log n) | O(log n) | O(log n) |
 | `QMultiMap` | O(log n) | O(log n) | O(log n) | O(log n) |
