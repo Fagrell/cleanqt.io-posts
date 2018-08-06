@@ -1,4 +1,4 @@
-#Qt Containers
+# Qt Containers
 
 The following post will dive into world of containers and explore the ones Qt provides and how they compare to the standard library's (STL). The post will cover the different types and which ones are unique to each library. API, performance and some internal implementation details will also be covered. The goal of the post is to identify which library might be preferred over the other.
 
@@ -15,32 +15,32 @@ In a talk by [Giuseppe D'Angelo](https://www.youtube.com/watch?v=uZ68dX1-sVc) he
 However, since Qt5, it's required to use a working STL implementation.
 
 
-##Container types
+## Container types
 
 Let's start by looking into the available types for each library. The following tables list the Qt containers and the STL counterparts for each container type: sequence containers, container adaptors, associated containers (ordered and unordered) and lastly classes which resemble containers. As you will note, some containers are only available in Qt and also the other way around is true. Each section will cover the unique Qt types as well as some additional information.
 
-###Sequence containers:
+### Sequence containers:
 
- Qt | STL
---- | --- 
-- | `std::array` 
-`QVector` | `std::vector` 
-- | `std::deque`
-`QLinkedList`|`std::list` 
-`QList` | - 
-- | `std::forward_list`
+| Qt | STL |
+| --- | --- |
+| - | `std::array` |
+| `QVector` | `std::vector` |
+| - | `std::deque` |
+| `QLinkedList`|`std::list` |
+| `QList` | - |
+| - | `std::forward_list` |
 
-#####Algorithmic Complexity
+##### Algorithmic Complexity
 
-Type | Random Access | Insertion | Prepending | Appending 
------ | --- | --- | --- | --- | ---
-`QLinkedList` | O(n) | O(1) | O(1) | O(1)
-`QList` | O(1)| O(n)| Amortised O(1) | Amortised O(1)
-`QVector` | O(1) | O(n) | O(n) | Amortised O(1) 
+| Type | Random Access | Insertion | Prepending | Appending |
+| ---- | --- | --- | --- | --- | --- |
+| `QLinkedList` | O(n) | O(1) | O(1) | O(1) |
+| `QList` | O(1)| O(n)| Amortised O(1) | Amortised O(1) |
+| `QVector` | O(1) | O(n) | O(n) | Amortised O(1) |
 
 The corresponding STL containers have the same complexity.
 
-####QList
+#### QList
 
 `QList` is a bit dodgy as it, at first glance, looks like a linked list, i.e. a `std::list`, yet it's a very different container.
 The `QList` is essentially an array of `void*` allowing fast random access, insertion, prepending and appending (see Algorithmic Complexity above). Each `void*` points to the added element which are allocated on the heap. However if `sizeof(T) <= sizeof(void*)` and the type has been declared to be either a `Q_MOVABLE_TYPE` or a `Q_PRIMITIVE_TYPE` the `QList` will internally use an array of `T` instead of `void*`. Because of this design the QList is a [memory waster](https://marcmutz.wordpress.com/effective-qt/containers/#containers-qlist) for most types compared to a `QVector`.
@@ -48,44 +48,44 @@ The `QList` is essentially an array of `void*` allowing fast random access, inse
 The official documentation recommended developer to use QList as the 'default' container in [Qt4](http://doc.qt.io/archives/qt-4.8/qlist.html), where as from [Qt5](http://doc.qt.io/qt-5/qlist.html) the official documentation encourage developers to use `QVector` instead:
 >QVector should be your default first choice. QVector<T> will usually give better performance than QList<T>, because QVector<T> always stores its items sequentially in memory, where QList<T> will allocate its items on the heap...
 
-###Container adaptors
- Qt | STL | Note
---- | --- | ---
-`QStack` | `std::stack`
-`QQueue` | `std::queue`
-- | `std::priority_queue`
+### Container adaptors
+| Qt | STL |
+| --- | --- |
+| `QStack` | `std::stack` |
+| `QQueue` | `std::queue` |
+| - | `std::priority_queue` |
 
 * `QStack` inherits from `QVector`, where as `std::stack's` underlying container can be any container that meet some [requirements](https://en.cppreference.com/w/cpp/container/stack). By default `std::stack` uses `std::deque` as underlying container.
 
 * `QQueue` inherits from `QList`. Similar to `std::stack` the `std::queue` as well as `std::priority_queue` can use any underlying container that meets some criteria, see [std::queue](https://en.cppreference.com/w/cpp/container/queue) and [std::priority_queue](https://en.cppreference.com/w/cpp/container/priority_queue). By default `std::queue`'s underlying container is `std::deque` and `std::priority_queue` uses a `std::vector`.
 
 
-###Associative containers
- Qt | STL 
---- | --- 
-- | `std::set`
-`QSet` | `std::unordered_set`
-- | `std::multiset`
-- | `std::unordered_multiset`
-`QMap` | `std::map`
-`QMultiMap` | `std::multimap`
-`QHash` | `std::unordered_map`
-`QMultiHash` | `std::unordered_multimap`
+### Associative containers
+| Qt | STL |
+| --- | --- |
+| - | `std::set` |
+| `QSet` | `std::unordered_set` |
+| - | `std::multiset` |
+| - | `std::unordered_multiset` |
+| `QMap` | `std::map` |
+| `QMultiMap` | `std::multimap` |
+| `QHash` | `std::unordered_map` |
+| `QMultiHash` | `std::unordered_multimap` |
 
 Note that `QSet's` STL counterpart is `std::unordered_set` and not `std::set`.
 
 #####Algorithmic Complexity
-Type | Key Access | | Insertion | 
---- | --- | --- | --- | --- | --- 
-| | __Average__ | __Worst Case__ | __Average__ | __Worst Case__ 
-`QMap` | O(log n) | O(log n) | O(log n) | O(log n) 
-`QMultiMap` | O(log n) | O(log n) | O(log n) | O(log n) 
-`QHash` | Amortised O(1) | O(n) | Amortised O(1) | O(n)
-`QSet` | Amortised O(1) | O(n) | Amortised O(1) | O(n)
+| Type | Key Access | | Insertion | 
+| --- | --- | --- | --- | --- | --- |
+| | __Average__ | __Worst Case__ | __Average__ | __Worst Case__ |
+| `QMap` | O(log n) | O(log n) | O(log n) | O(log n) |
+| `QMultiMap` | O(log n) | O(log n) | O(log n) | O(log n) |
+| `QHash` | Amortised O(1) | O(n) | Amortised O(1) | O(n) |
+| `QSet` | Amortised O(1) | O(n) | Amortised O(1) | O(n) |
 
 The corresponding STL containers have the same complexity.
 
-###Other classes which resemble containers in Qt
+### Other classes which resemble containers in Qt
 The following three template classes are related to containers but don't expose any iterators.
 
 * `QVarLengthArray`
@@ -93,7 +93,7 @@ The following three template classes are related to containers but don't expose 
 * `QContiguousCache`
 
 
-####QVarLengthArray
+#### QVarLengthArray
 The `QVarLengthArray` container is a low-level array with a variable length, used for memory optimisation. On construction, the container allocates a predefined array of length N (default to 256) on the stack. If the amount of elements increases above N, the elements will be moved automatically to a heap memory and then function similarly to a `QVector`. 
 
 A typical use case is when a temporary array is needed to be constructed multiple time, but the element size is varying:
@@ -111,12 +111,12 @@ int func(const int n) {
 
 ```
  
-####QCache and QContiguousCache
+#### QCache and QContiguousCache
 `QCache` resembles a `QHash` (the underlying container is even a `QHash`) and is used for memory optimisation. The class takes ownership of the passed in elements and deletes them automatically when a specified maximum is reach. When adding new elements and the maximum is reached, the last used elements will be deleted. 
 
 `QContiguousCache` function in a similar manner to `QCache` but restrict the elements in the container to be contiguous. This enables the class to be more memory efficient than the `QCache` and use fewer processor cycles.
 
-##API
+## API
 The Qt containers provide two sets of API: the "Qt Way" as well as the "STL Compatible Way". Personally, I think the Qt Way is more readable, however by using the STL API it will be easier to swap out a Qt container for its STL counterpart if desired in the future. See examples below for some of the API differences using a `QVector`:
 
 ```cpp
@@ -168,7 +168,7 @@ Although the Qt containers have quite a few additional features they also lack s
 * The types must implement the default constructor and copy-constructor in order to be used in a Qt container.
 * Move-only types are not (and will never be) supported because of Qt containers' principle of implicit sharing (see below for details about implicit sharing).
 
-##Implicit sharing
+## Implicit sharing
 [Most of Qt's containers](http://doc.qt.io/qt-5/implicit-sharing.html#list-of-classes) use implicit data sharing which is an optimisation to maximise resource usage by minimising copying. Basically the containers use reference counting and copy-on-write internally. What this means is that when a Qt container is copied, it's only a _shallow copy_ and the "real", _deep copy_, is done when a non-const function is called, best way to understand this is with an example:
 
 ```cpp
@@ -226,7 +226,7 @@ However, if you prefer the Qt API and are aware of their drawbacks, I personally
 
 Also, some of Qt's API returns Qt containers (`QStringList` is very common) and in those cases I recommend to avoid converting it to a STL counterpart.
 
-##Read more
+## Read more
 * [Qt's official documentation on the containers](http://doc.qt.io/qt-5/containers.html)
 * [STL containers - cppreference.com](https://en.cppreference.com/w/cpp/container)
 * [Marc mutz very detailed blog post series about understanding Qt containers inner-work](https://marcmutz.wordpress.com/effective-qt/containers/)
