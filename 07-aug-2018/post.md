@@ -33,7 +33,7 @@ Let's start by looking into the available types for each library. The following 
 ##### Algorithmic Complexity
 
 | Type | Random Access | Insertion | Prepending | Appending |
-| ---- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | `QLinkedList` | O(n) | O(1) | O(1) | O(1) |
 | `QList` | O(1)| O(n)| Amortised O(1) | Amortised O(1) |
 | `QVector` | O(1) | O(n) | O(n) | Amortised O(1) |
