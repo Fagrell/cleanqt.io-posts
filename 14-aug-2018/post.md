@@ -3,7 +3,7 @@
 
 __Blog post published on [cleanqt.io](www.cleanqt.io)__ 
 
-If you try to copy a class that derives from a QObject it will result in a compiler error, i.e
+If you try to copy a class that derives from a `QObject` it will result in a compiler error, i.e
 
 ```cpp
 class MyClass : public QObject {
@@ -79,7 +79,7 @@ class MyClass : public QObject {
   Class &operator=(const Class &);
 #endif
 ```
-The main reason, as mentioned in this post, is to improve the error message. Without the macro the following error message is reported in Qt4:
+The main reason, as mentioned in the stackoverflow post, is to improve the error message. Without the macro, the following error message is reported using Qt4:
 
 >error: ‘QObject::QObject(const QObject&)’ is private within this context`
 
@@ -107,4 +107,4 @@ Without adding the macro in the subclass, the following error message is display
 
 The copy-constructor and assignment-operator have now been declared with `=delete` instead of just being private, resulting in a preferred error message.
 
-Even though the error message has improved, I still believe it's valuable to redeclare the macro in the derived class as it then automatically document the behaviour of the class. Someone who's new to Qt can quickly understand the intended usage: the object shouldn't be copied!
+Even though the error message has improved, I still believe it's valuable to redeclare the macro in the derived class, as it  document the behaviour of the class. Someone who's new to Qt can quickly understand the intended usage: the object shouldn't (and can't) be copied!
