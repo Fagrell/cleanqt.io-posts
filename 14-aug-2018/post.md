@@ -3,7 +3,7 @@
 
 __Blog post published on [cleanqt.io](www.cleanqt.io)__ 
 
-If you try to copy a class that derives from a `QObject` it will result in a compiler error, i.e
+If you try to copy a class that derives from a `QObject` it will result in a compiler error, e.g.
 
 ```cpp
 class MyClass : public QObject {
@@ -19,7 +19,7 @@ with Qt5 and using C+11 (supporting `=delete`):
 or with earlier versions:
 >error: ‘QObject::QObject(const QObject&)’ is private within this context`
 
-This behaviour is by design. But why is the copy constructor (as well as the assignment operator) deleted? What if you still desire to copy it? If it's not copyable is it then movable? The following post will examine these questions as well as exploring whether it's a good practice to repeat the deletion in the custom subclass. Let's dive in!
+This behaviour is by design. But why is the copy constructor (as well as the assignment operator) deleted? What if you still want to copy it? If it's not copyable is it then movable? The following post will examine these questions as well as explore whether it's a good practice to repeat the deletion in the custom subclass. Let's dive in!
 
 There are [several reasons](http://doc.qt.io/qt-5/object.html) why a `QObject` can't be copied. The two biggest reasons are:
 
@@ -28,16 +28,16 @@ There are [several reasons](http://doc.qt.io/qt-5/object.html) why a `QObject` c
 
 Other reasons, but perhaps less critical, are:
 
-* A `QObject` can be consider unique by giving it a name which could be used as a reference key, i.e. by setting the  `QObject::objectName()`. If the name is set, it's unclear which name should be given to the copy.
+* A `QObject` can be considered unique by giving it a name which could be used as a reference key, i.e. by setting the  `QObject::objectName()`. If the name is set, it's unclear which name should be given to the copy.
 * `QObjects` can be extended with new properties during runtime. Should these new properties also be inherited by the copy?
 
-In general, `QObjects` are referred to by their pointer address by other objects. This is the case in for example the previously mentioned `signals and slots mechanism`. Because of this, `QObjects` can't be moved; connections between them would then be lost. In the source code of `QObject`, we can see that the are no move constructor or move assignment operator declared. However, since the copy constructor is deleted, the move constructor won't be implicitly generated and an compiler error will be reported if a developer attempts to move a `QObject`.
+In general, `QObjects` are referred to by their pointer address by other objects. For example, this is the case in the aforementioned `signals and slots mechanism`. Because of this, `QObjects` can't be moved; connections between them would then be lost. In the source code of `QObject`, we can see that the are no move constructor or move assignment operator declared. However, since the copy constructor is deleted, the move constructor won't be implicitly generated and an compiler error will be reported if a developer attempts to move a `QObject`.
 
-So you can't copy and you can't move a `QObject`, but what if you desire to copy the underlying data (or properties)? Qt's documentation distinguish between two object types in the [Qt Object Model](http://doc.qt.io/qt-5/object.html): value and identity objects. Value-objects, such as `QSize`, `QColor` and `QString` are objects that are possible to be copied and assigned. In contrast, the identity-objects can't be copied but are possible to clone. As you might have guessed, an example of an identify object is the `QOBject` or any class that derives from it. The meaning of cloning can be read from the official documentation:
+So you can't copy and you can't move a `QObject`, but what if you desire to copy the underlying data (or properties)? Qt's documentation distinguish between two object types in the [Qt Object Model](http://doc.qt.io/qt-5/object.html): value and identity objects. Value objects, such as `QSize`, `QColor` and `QString` are objects that can be copied and assigned. In contrast, the identity objects can't be copied but can be cloned. As you might have guessed, an example of an identity object is the `QOBject` or any class that derives from it. The meaning of cloning can be read from the official documentation:
 
 >Cloning means to create a new identity, not an exact copy of the old one. For example, twins have different identities. They may look identical, but they have different names, different locations, and may have completely different social networks.
 
-My understanding of cloning is that you could expose a `clone()`-function in a subclass which create a new identify but not a _real_ copy, i.e:
+My understanding of cloning is that you could expose a `clone()`-function in a subclass which creates a new identity but not a _real_ copy, i.e:
 
 ```cpp
 class MyClass : public QObject {
@@ -107,4 +107,4 @@ Without adding the macro in the subclass, the following error message is display
 
 The copy-constructor and assignment-operator have now been declared with `=delete` instead of just being private, resulting in a preferred error message.
 
-Even though the error message has improved, I still believe it's valuable to redeclare the macro in the derived class, as it  document the behaviour of the class. Someone who's new to Qt can quickly understand the intended usage: the object shouldn't (and can't) be copied!
+Even though the error message has improved, I still believe it's valuable to redeclare the macro in the derived class, as it  documents the behaviour of the class. Someone who's new to Qt can quickly understand the intended usage: the object shouldn't (and can't) be copied!
