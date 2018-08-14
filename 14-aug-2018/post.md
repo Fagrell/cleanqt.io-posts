@@ -105,6 +105,6 @@ However from Qt5, the macro was changed and declared as:
 Without adding the macro in the subclass, the following error message is displayed:
 >error: use of deleted function ‘MyClass::MyClass(const MyClass&)’
 
-The copy-constructor and assignment-operator have now been declared with `=delete` instead of just being private, resulting in a preferred error message.
+The copy constructor and assignment operator have now been declared with `=delete` instead of just being private, resulting in a preferred error message.
 
 Even though the error message has improved, I still believe it's valuable to redeclare the macro in the derived class, as it  documents the behaviour of the class. Someone who's new to Qt can quickly understand the intended usage: the object shouldn't (and can't) be copied!
