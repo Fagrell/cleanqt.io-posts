@@ -66,7 +66,7 @@ interface_compile_features(cxx_variadic_templates)
 ### Back to the code from the past
 With these concepts in mind, let's go through some of the lines in the code above and explore them more in details.
 
-```cpp
+```
 add_definitions("-Wall")
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 set(CMAKE_CXX_FLAGS -std=c++11)
