@@ -15,7 +15,7 @@ file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 ...
 ``` 
 
-Before we dive into the details of potential problems with the code above, one might wonder 'What is __Modern__ CMake?'. It seems that the consensus of what's considered modern begins from version 3 and above when __targets__ and __properties__ were made (?) more feature complete. These concepts introduced a new paradigm which improved upon the build structure including project scoping and the handling of transitive dependencies. Version 3.0.0 was released four years ago (as of 2018), but somehow, this new powerful paradigm never really took off. Depressingly, the official documentation from KitWare is still providing [tutorials](https://cmake.org/cmake-tutorial/) using old methods and practices. 
+Before we dive into the details of potential problems with the code above, one might wonder 'What is __Modern__ CMake?'. It seems that the consensus of what's considered modern begins from version 3 and above when a lot of improvements were made for __targets__ and __properties__. These concepts introduced a new paradigm which improved upon the build structure including project scoping and the handling of transitive dependencies. Version 3.0.0 was released four years ago (as of 2018), but somehow, this new powerful paradigm never really took off. Depressingly, the official documentation from KitWare is still providing [tutorials](https://cmake.org/cmake-tutorial/) using old methods and practices. 
 
 The first time I heard about modern CMake was a couple of years ago, but I really started to embrace it after watching an excellent talk by [Daniel Pfeifer](https://www.youtube.com/watch?v=bsXLMQ6WgIk) last year. He opened my eyes to how good, modern and clean CMake looks like; perhaps you'll appreciate it as much as I did. Some of these concepts and guidelines, including an example project with Qt, will be presented in this series.
 
@@ -27,8 +27,7 @@ A target can be thought of as a class with encapsulation. The target is for exam
 
 In a similar analogy, properties can be thought of as member variables and methods in a specific target. These can either be used internally when the project is built, or exposed to, and inherited by, other projects when they  link to the target. Examples of properties are the target's source code, the required compiler options as well as the libraries that the target needs to link to. 
 
-In modern CMake a project will be defined by one or more targets which building blocks consist of the properties. 
--> a bit clumsy, not sure what you mean
+In modern CMake a project will consist of one or more targets which are individually defined by properties. 
 
 ### Property scope
 
@@ -93,7 +92,7 @@ target_include_directories(Foo
 
 ```
 
-I'm sure you already know the potential problem with the third line by now: setting the `CMAKE_CXX_FLAGS` will automatically apply to all other targets in the same scope. The target alternative command was already covered in _example 3_ above.
+I'm sure you already know the potential problem with the third line by now: setting the `CMAKE_CXX_FLAGS` will automatically apply to all other targets in the same scope. The target alternative command was already covered in _example 1_ above.
 
 ### `target_linked_libraries()` solves transitive dependencies
 For a similar reason the global command `linked_libraries()` should also be avoided when linking to libraries. The target alternative command is `target_linked_libraries()`. Not only does it handle scoping but it will also solve transitive dependencies. For example, when you need to link to a target you'll also have to to link to its dependencies. And the dependencies might have dependencies. These transitive dependecies will be solved by the target command as it automatically traverses the dependency tree.
@@ -120,9 +119,9 @@ Although it's somewhat conceptually broken, I prefer to use `file(GLOB ...)` ins
 * Be selective with the scope - if possible, avoid exposing parameters in the __INTERFACE__ scope.
 * Avoid using global commands such as `include_directories()` and `linked_libraries()`.
 * `target_linked_libraries()` automatically solves transitive dependencies,
-* Be aware of `file(GLOB ...)` and if you do use it - learn and share about the problems to the team.
+* Be wary of `file(GLOB ...)` and if you do use it - learn and share about the problems to the team.
 
-I've only touched (scratched?) the surface of modern CMake as this post only covers the core of it. If you're intrested in learning more, an excellent resource is the following [GitHub project](https://cliutils.gitlab.io/modern-cmake/). In the next part we'll go through an example with Qt and how a library can be exported using modern methodologies. 
+I've only scratched the surface of modern CMake as this post only covers the basic. If you're intrested in learning more, an excellent resource is the following [GitHub project](https://cliutils.gitlab.io/modern-cmake/). The next part in the series will comprise of a CMake example using Qt and how a library can be exported using modern methodologies. 
 
 Also, my best advice is to keep CMake code clean - treat it as it would be production code. It will save time in the long run!
 
