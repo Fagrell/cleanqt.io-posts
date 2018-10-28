@@ -7,16 +7,18 @@ In a way to encourage more people to start using Qt I've decided to kick off yet
 In this series the following topics will be covered, each in a separate post.
 
 1. Events and the main event loop
-2. Meta-object system (including QObject and MOC)
-3. Signals and slots - communication between objects
-4. Hierarchy and memory management
-5. MVC or rather model/view and delegate programming
-6. Choose your camp Quick/QML-camp or Widgets-camp
+2. [Meta-object system (including QObject and MOC)](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-2)
+3. [Signals and slots - communication between objects](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-3)
+4. [Hierarchy and memory management](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-4)
+5. [MVC or rather model/view and delegate programming](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-5)
+6. [Choose your camp Quick/QML-camp or Widgets-camp](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-6)
+7. Qt Quick/QML example
+8. Qt Widgets example
 7. Tooling, e.g. Qt Creator
 8. Remaining good-to-know topics
 9. Where to go from here?
 
-The topics above have been carefully chosen based on what I believe is the core of Qt and perhaps the main unknown unknowns for C++ developers. The topics have also been tailored based on feedback that I've received when asked around on different Qt/C++ forums as well as from friends. That being said, if there is any topic that is missing and you believe it should really be part of the list above, let me know in the comments.
+The topics above have been carefully chosen based on what I believe are the core of Qt and perhaps the main unknown unknowns for C++ developers. The topics have also been tailored based on feedback that I've received when asked around on different Qt/C++ forums as well as from friends. That being said, if there is any topic that is missing and you believe it should really be part of the list above, let me know in the comments.
 
 ### What is Qt and why would you want to use it?
 Before we jump into the first point, let's talk about what Qt is and why you would want to use it. I'm going to be lazy and shamefully copy-paste my description, with some adjustments, on what Qt is from the about page:
