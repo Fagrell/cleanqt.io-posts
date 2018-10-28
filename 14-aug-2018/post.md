@@ -3,6 +3,7 @@
 
 __Blog post published on [cleanqt.io](www.cleanqt.io)__ 
 
+
 If you try to copy a class that derives from a `QObject` it will result in a compiler error, e.g.
 
 ```cpp
@@ -13,7 +14,7 @@ class MyClass : public QObject {
 auto my_class_copy = my_class;
 ```
 
-with Qt5 and using C+11 (supporting `=delete`):
+with Qt5 and using C++11 (supporting `=delete`):
 >error: use of deleted function ‘MyClass::MyClass(const MyClass&)’
 
 or with earlier versions:
@@ -77,7 +78,6 @@ class MyClass : public QObject {
 #define Q_DISABLE_COPY(Class) \
   Class(const Class &); \
   Class &operator=(const Class &);
-#endif
 ```
 The main reason, as mentioned in the stackoverflow post, is to improve the error message. Without the macro, the following error message is reported using Qt4:
 
@@ -100,7 +100,6 @@ However from Qt5, the macro was changed and declared as:
 #define Q_DISABLE_COPY(Class) \
   Class(const Class &) Q_DECL_EQ_DELETE;\
   Class &operator=(const Class &) Q_DECL_EQ_DELETE;
-#endif
 ```
 Without adding the macro in the subclass, the following error message is displayed:
 >error: use of deleted function ‘MyClass::MyClass(const MyClass&)’
