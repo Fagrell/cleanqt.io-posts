@@ -12,8 +12,10 @@ This is the fourth post in the series "Crash course in Qt for C++ developers" co
 2. [Meta-object system (including QObject and MOC)](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-2)
 3. [Signals and slots - communication between objects](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-3)
 4. Hierarchy and memory management
-5. MVC or rather model/view and delegate programming
-6. Choose your camp Quick/QML-camp or Widgets-camp
+5. [MVC or rather model/view and delegate programming](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-5)
+6. [Choose your camp Quick/QML-camp or Widgets-camp](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-6)
+7. Qt Quick/QML example
+8. Qt Widgets example
 7. Tooling, e.g. Qt Creator
 8. Remaining good-to-know topics
 9. Where to go from here?
@@ -138,7 +140,7 @@ int main() {
 Of course, it goes without saying that this is useful to verify if an object is still alive.
 
 #### STL or Qt?
-Since we now have two implementations in our arsenal, one might wonder which ones should be used: STL's or Qt's smart pointers? Qt's smart pointers exist for historical reasons and don't provide any benefits over the STL ones. Therefore, my recommendation is to prefer the STL smart pointers simply because of these reasons:
+Since we now have two implementations in our arsenal, one might wonder which ones should be used: STL's or Qt's smart pointers? Qt's smart pointers exist for historical reasons and only provide one benefit over the STL ones: Qt's guarantee ABI compatibility within a major version, STL's don't. However, my recommendation is to prefer the STL smart pointers simply because of these reasons:
 
 * The STL smart pointers are usually implemented by the same people who implement the C++ compiler and are therefore most likely better optimised.
 * Altough Qt's smart pointers mimic the interface of the STL's there are still some subtleties. Since more developers are perhaps more familiar with STL pointers, they are also the ones that should be preferred.
@@ -147,7 +149,6 @@ Similar to smart pointers Qt also provides its own sets of containers. This post
 
 ### Wrap up
 
-We've now learnt the Qt-way of handling memory. If you're coming from a modern C++ background, perhaps you read through the whole post and felt very uncomfortable with all the raw `new`s and `delete`s. As it may be, it will take some time to adjust. Perhaps you'll only start to appreciate Qt's hierarchy model after you've used it for some time. Nonetheless, consider the main purpose of using smart pointers: to define ownership and handle memory. This is exactly what the Qt's parent-child relationship is designed to do. If it helps, it's possible to design a whole Qt application without ever using `delete`.
+We've now learnt the Qt-way of handling memory. If you're coming from a modern C++ background, perhaps you read through the whole post and felt very uncomfortable with all the raw `new`s and `delete`s. As it may be, it will take some time to adjust. Perhaps you'll only start to appreciate Qt's hierarchy model after you've used it for some time. Nonetheless, consider the main purpose of using smart pointers: to define ownership and handle memory. This is exactly what the Qt's parent-child relationship is designed to do. And speaking of ownership, it's again worth mentioning that the __parent-child relationship should never be mixed  with smart pointers that also handle ownership__, such as unique and shared pointers.  Mixing ownership will most likely lead to a tragedy and undefined behaviour.  If it helps, it's possible to design a whole Qt application without ever using `delete`. 
 
 As they say "When in Rome, do as the Romans do". You'll be fine!
-
