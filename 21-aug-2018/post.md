@@ -4,15 +4,13 @@ __Blog post published on [cleanqt.io](www.cleanqt.io)__
 
 Does your CMake projects look similar to the example below? If yes - I'm positive you'll find this post helpful as it's is especially composed for you. This post will cover the core of what's considered modern CMake and will be part of a blog post series.
 
-```
-...CMake
+```CMake
 add_definitions("-Wall")
 
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 set(CMAKE_CXX_FLAGS -std=c++11)
 
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-...
 ``` 
 
 Before we dive into the details of potential problems with the code above, one might wonder 'What is __Modern__ CMake?'. It seems that the consensus of what's considered modern begins from version 3 and above when a lot of improvements were made for __targets__ and __properties__. These concepts introduced a new paradigm which improved upon the build structure including project scoping and the handling of transitive dependencies. Version 3.0.0 was released four years ago (as of 2018), but somehow, this new powerful paradigm never really took off. Depressingly, the official documentation from KitWare is still providing [tutorials](https://cmake.org/cmake-tutorial/) using old methods and practices. 
@@ -62,7 +60,7 @@ target_compile_features(Foo INTERFACE cxx_variadic_templates)
 # Note that for external exposure, we prepend with interface_
 interface_compile_features(cxx_variadic_templates)
 ```
-<br/>
+ <br/>
 ### Back to the code from the past
 With these concepts in mind, let's go through some of the lines in the code above and explore them more in details.
 
@@ -72,7 +70,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/)
 set(CMAKE_CXX_FLAGS -std=c++11)
 ```
 
-Let's start with the first line. The `-Wall` compiler option is used to to enable all GCC compiler's warning messages. However, it will not only apply to the current sources but also to all _directories and sources below_. Perhaps this is the intention, but it's likely to lead to some issues along the development road.
+Let's start with the first line. The `-Wall` compiler option is used to enable all GCC compiler's warning messages. However, it will not only apply to the current sources but also to all _directories and sources below_. Perhaps this is the intention, but it's likely to lead to some issues along the development road.
 
 Imagine that you're working on a big project with a hierarchy of many targets and the top level project has added the `-Wall` flag. In your specific subproject you're only interested in certain warnings. How would you solve this? You could potentially add `remove_definitions("-Wall")` in your CMake file or perhaps temporary remove the `"-Wall"` flag from the top level. But what if you accidentally commit the change? Also someone who's new to CMake might struggle more when resources are leaked from one project to another. A modern approach is to apply the property on the target itself by declaring it within the PRIVATE scope:
 
@@ -93,8 +91,8 @@ target_include_directories(Foo
 
 I'm sure you already know the potential problem with the third line by now: setting the `CMAKE_CXX_FLAGS` will automatically apply to all other targets in the same scope. The target alternative command was already covered in _example 1_ above.
 
-### `target_linked_libraries()` solves transitive dependencies
-For a similar reason the global command `linked_libraries()` should also be avoided when linking to libraries. The target alternative command is `target_linked_libraries()`. Not only does it handle scoping but it will also solve transitive dependencies. For example, when you need to link to a target you'll also have to to link to its dependencies. And the dependencies might have dependencies. These transitive dependecies will be solved by the target command as it automatically traverses the dependency tree.
+### `target_link_libraries()` solves transitive dependencies
+For a similar reason the global command `link_libraries()` should also be avoided when linking to libraries. The target alternative command is `target_link_libraries()`. Not only does it handle scoping but it will also solve transitive dependencies. For example, when you need to link to a target you'll also have to link to its dependencies. And the dependencies might have dependencies. These transitive dependencies will be solved by the target command as it automatically traverses the dependency tree.
 
 ### Warning about `file(GLOB ...)`
 
@@ -111,16 +109,14 @@ Although it's somewhat conceptually broken, I prefer to use `file(GLOB ...)` ins
 
 >If the CONFIGURE_DEPENDS flag is specified, CMake will add logic to the main build system check target to rerun the flagged GLOB commands at build time. If any of the outputs change, CMake will regenerate the build system.
 
-
 ### Summary
 
 * Reduce the usage of global variables and embrace __targets__ and __properties__.
 * Be selective with the scope - if possible, avoid exposing parameters in the __INTERFACE__ scope.
-* Avoid using global commands such as `include_directories()` and `linked_libraries()`.
-* `target_linked_libraries()` automatically solves transitive dependencies,
+* Avoid using global commands such as `include_directories()` and `link_libraries()`.
+* `target_link_libraries()` automatically solves transitive dependencies,
 * Be wary of `file(GLOB ...)` and if you do use it - learn and share about the problems to the team.
 
 I've only scratched the surface of modern CMake as this post only covers the basic. If you're intrested in learning more, an excellent resource is the following [GitHub project](https://cliutils.gitlab.io/modern-cmake/). The next part in the series will comprise of a CMake example using Qt and how a library can be exported using modern methodologies. 
 
 Also, my best advice is to keep CMake code clean - treat it as it would be production code. It will save time in the long run!
-
