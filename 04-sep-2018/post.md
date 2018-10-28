@@ -8,10 +8,12 @@ This is the second post in the series "Crash course in Qt for C++ developers" co
 
 1. [Events and the main event loop](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-1)
 2. Meta-object system (including QObject and MOC)
-3. Signals and slots - communication between objects
-4. Hierarchy and memory management
-5. MVC or rather model/view and delegate programming
-6. Choose your camp Quick/QML-camp or Widgets-camp
+3. [Signals and slots - communication between objects](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-3)
+4. [Hierarchy and memory management](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-4)
+5. [MVC or rather model/view and delegate programming](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-5)
+6. [Choose your camp Quick/QML-camp or Widgets-camp](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-6)
+7. Qt Quick/QML example
+8. Qt Widgets example
 7. Tooling, e.g. Qt Creator
 8. Remaining good-to-know topics
 9. Where to go from here?
@@ -19,9 +21,9 @@ This is the second post in the series "Crash course in Qt for C++ developers" co
 Let's go back to the Qt example. Did you really compile it? Did you see something like...?
 > Automatic MOC for target...
 
-Qt includes some C++ extension compilers which automatically generates extra code and files before compilation and linking. The __Meta-Object Compiler__, or __MOC__ for short, is a tool that parses all header files in the project. Depending on what's defined in them, the tool might (see `Q_OBJECT` below) generate a companion file for a class named moc\_class-name.cpp. To enable the MOC step, have a look at the [Qt documentation](http://doc.qt.io/qt-5/moc.html) or if you're familiar with CMake: just add `AUTOMOC ON` as a property to the target. 
+Qt includes some C++ extension compilers which automatically generate extra code and files before compilation and linking. The __Meta-Object Compiler__, or __MOC__ for short, is a tool that parses all header files in the project. Depending on what's defined in them, the tool might (see `Q_OBJECT` below) generate a companion file for a class named moc\_class-name.cpp. To enable the MOC step, have a look at the [Qt documentation](http://doc.qt.io/qt-5/moc.html) or if you're familiar with CMake: just add `AUTOMOC ON` as a property to the target. 
 
-Qt has been criticised by some developers for this extra compilation step. However, it's done for good reasons. If you're interested in why such a decision was made, Qt has composed an interesting article which have [got you covered](http://doc.qt.io/qt-5/why-moc.html).
+Qt has been criticised by some developers for this extra compilation step. However, it's done for good reasons. If you're interested in why such a decision was made, Qt has composed an interesting article which has [got you covered](http://doc.qt.io/qt-5/why-moc.html).
 
 The generated moc\_-files implement functions which are used for several different features. The perhaps most important ones are the _signals and slots mechanism_, the _run-time type information (RTTI)_, and the _dynamic property system_. 
 
@@ -29,9 +31,9 @@ The first feature, signals and slots, is the main reason for introducing the MOC
 
 ### The man, the myth, the QObject
 
-You might wonder what's so special about the `QObject`. In order to do any of the aforementioned concepts in Qt you must subclass a `QObject` and for signals and slots you'll also have to define the macro `Q_OBJECT` in the class. Actually, just to get a sense of how important the object is, all [Qt identity objects](http://doc.qt.io/qt-5/object.html) inherits from the `QObject`. And there are quite many of them in the framework. 
+You might wonder what's so special about the `QObject`. In order to do any of the aforementioned concepts in Qt you must subclass a `QObject` and for signals and slots you'll also have to define the macro `Q_OBJECT` in the class. Actually, just to get a sense of how important the object is, all [Qt identity objects](http://doc.qt.io/qt-5/object.html) inherit from the `QObject`. And there are many of them in the framework. 
 
-Although the `Q_OBJECT` is optional when subclassing a `QObject`, the [official documentation](http://doc.qt.io/qt-5/qobject.html) recommends to always do it: without it, some functions may result in unexpected behaviour. The macro `Q_OBJECT` is what that the MOC is looking for in order to generate the moc\_-file. A typical example of a Qt class will look like this:
+Although the `Q_OBJECT` is optional when subclassing a `QObject`, the [official documentation](http://doc.qt.io/qt-5/qobject.html) recommends to always do it: without it, some functions may result in unexpected behaviour. The macro `Q_OBJECT` is what the MOC is looking for in order to generate the moc\_-file. A typical example of a Qt class will look like this:
 
 ```cpp
 #include <QObject>
@@ -48,7 +50,7 @@ public:
 };
 ``` 
 
-Actually, this is probably how _most_ of your Qt classes will look like. By subclassing `QObject` we have now enabled the _meta-object system_ and can now retrieve some runtime information about the class, such as the name of the class:
+Actually, this is probably what _most_ of your Qt classes will look like. By subclassing `QObject` we have now enabled the _meta-object system_ and can now retrieve some runtime information about the class, such as the name of it:
 
 ```cpp
 MyClass myclass;
@@ -63,11 +65,11 @@ You might now think "This is nothing new! It is already supported in C++ using `
 
 Yes, true! However, the Qt system doesn't require native RTTI compiler support. In addition, without a RTTI supported compiler, it's still possible to perform dynamic casts on `QObjects` using [qobject_cast()](http://doc.qt.io/qt-5/metaobjects.html) instead of the traditional `C++ dynamic_cast()`. `qobject_cast` even works across dynamic library boundaries.
 
-Did you see the macro `Q_DISABLE_COPY(MyClass)` defined in the class? It is, not surprisingly, used to prevent user from copying or moving the object. This is by design and I've written another blog post which is covering the reasons behind this: [why qobject subclasses are not copyable](https://www.cleanqt.io/blog/why-qobject-subclasses-are-not-copyable).
+Did you see the macro `Q_DISABLE_COPY(MyClass)` defined in the class? It is, not surprisingly, used to prevent users from copying or moving the object. This is by design and I've written another blog post which is covering the reasons behind this: [why qobject subclasses are not copyable](https://www.cleanqt.io/blog/why-qobject-subclasses-are-not-copyable).
 
 ### Qt's sophisticated property system
 
-In addition to RTTI, the class can now be extend with properties. Qt's property system is extremely flexible and works cross-platform without relying on any non-standard compiler features. In fact the Qt's property system is so powerful that you can dynamically create properties during run-time, such as: 
+In addition to RTTI, the class can now be extend with properties. Qt's property system is extremely flexible and works cross-platform without relying on any non-standard compiler features. In fact  Qt's property system is so powerful that you can dynamically create properties during run-time, such as: 
 
 ```cpp
 MyClass myclass;
@@ -142,7 +144,6 @@ In this post we've covered MOC, Qt's RTTI, qobject_cast and the property system.
 * `QObjects` can be used with [guarded pointers](http://doc.qt.io/qt-5/qpointer.html) which are automatically set to 0 after deletion.
 * `QObjects`, `Q_OBJECT` and the MOC enable the perhaps most powerful feature of them all: the seamless inter-object communication `signals and slots`, which will be covered in the next post.
 
-As a final point, I would like to to mention that, although the `QObject` is extremely useful, the overhead of subclassing a `QObject` is [rather significant](https://stackoverflow.com/questions/15763088/how-heavy-is-qobject-really). It should probably be avoided if you're not going to use any of its features. Plain data structures shouldn't also inherit from `QObjects` since they then won't be copyable or movable.
+As a final point, I would like to mention that, although the `QObject` is extremely useful, the overhead of subclassing a `QObject` is [rather significant](https://stackoverflow.com/questions/15763088/how-heavy-is-qobject-really). It should probably be avoided if you're not going to use any of its features. Plain data structures shouldn't also inherit from `QObjects` since they then won't be copyable or movable.
 
-See you next time! 
-
+See you next time!

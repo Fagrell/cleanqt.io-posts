@@ -1,6 +1,7 @@
 #include "myclass.h"
 
-MyClass::MyClass() {
+MyClass::MyClass(QObject* parent) :
+  QObject{parent} {
 }
 
 const QString& MyClass::name() const {
@@ -17,4 +18,14 @@ const QString& MyClass::creator() const {
 
 void MyClass::setCreator(QString creator) {
   m_creator = std::move(creator);
+}
+
+
+
+GrandParent::GrandParent() {}
+
+void GrandParent::createFamily() {
+   auto parent = new QObject{this}; //parent->setParent(this); also works
+   auto child = new QObject{parent}; //child->setParent(parent); ditto
+   Q_UNUSED(child)
 }

@@ -1,24 +1,18 @@
-#include <QDebug>
-#include <QMetaProperty>
+#include <QApplication>
+#include <QSplitter>
+#include <QStringListModel>
+#include <QComboBox>
+#include <QListView>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
-#include "myclass.h"
+#include <QTableView>
+#include <QtWidgets>
 
-void printAllProperties(const QObject& object) {
-  const QMetaObject* metaobject = object.metaObject();
-  int count = metaobject->propertyCount();
-  for (int i{0}; i < count; ++i) {
-    QMetaProperty metaproperty = metaobject->property(i);
-    const char* name = metaproperty.name();
-    QVariant value = object.property(name);
-    qDebug() << name << ": " << value.toString();
-  }
-}
-
-int main() {
- MyClass myclass;
- qDebug() << myclass.metaObject()->className();
-
- printAllProperties(myclass);
-
- return 0;
+int main(int argc, char *argv[]) {
+  QApplication app{argc, argv};
+  QWidget window;
+  new QLabel{"Hello World!", &window};
+  window.show();
+  return app.exec();
 }
