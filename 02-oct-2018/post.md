@@ -7,15 +7,16 @@ Have you ever heard of [__M__odel-__V__iew-__C__ontroller](https://en.wikipedia.
 This is the fifth post in the series "Crash course in Qt for C++ developers" covering the __MVC or Model/View programming__ in Qt. The other topics are listed below.
 
 1. [Events and the main event loop](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-1)
-2. [Meta-object system (including QObject and MOC)](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-2)
-3. [Signals and slots - communication between objects](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-3)
-4. [Hierarchy and memory management](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-4)
-5. MVC or rather model/view and delegate programming
-6. Choose your camp Quick/QML-camp or Widgets-camp
+2. [Meta-object system (including QObject and MOC)](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-2)
+3. [Signals and slots - communication between objects](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-3)
+4. [Hierarchy and memory management](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-4)
+5. [MVC or rather model/view and delegate programming](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-5)
+6. [Choose your camp Quick/QML-camp or Widgets-camp](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-6)
+7. Qt Quick/QML example
+8. Qt Widgets example
 7. Tooling, e.g. Qt Creator
 8. Remaining good-to-know topics
 9. Where to go from here?
-
 
 ### What? Why?
 Perhaps you didn't understand any of that. That's absolutely fine! We're just about to explore what it is and why it's useful. Let's start with the purpose - what problem is MVC solving? Obviously, a non-trivial application needs a good architecture to be scalable. And many good architectures are fundamentally based on the SoC principle. By incorporating MVC, the programs are more adaptable to an ever changing specification and can easily be tested and extended with additional functionality. These capabilities are core ingredients in a good architecture formula. Let's see what those concerns are in the MVC pattern. The three components consist of:
@@ -35,7 +36,7 @@ Similarly to MVC, Qt's __Model/view__ design pattern is essentially separated in
 * The model and view are joined by the  __delegate__ which is used to define the presentation of each individual element in the data. It also handles the editing of an element.
 
 <center>
-![Clean Qt Model/view](../../../assets/blog_images/model-view.svg)
+<img style="max-width:100%; max-height:100%; width:250px;" alt="Clean Qt Model/view" src="../../../assets/blog_images/model-view.svg">
 </center>
 
 You might wonder where MVC's Controller comes in, in this design. The controller is essentially merged into the view and the delegate of the model/view design as they are both receiving user inputs. It's also worth pointing out that both the delegate and the view in Qt's design act as the view in the traditional MVC description: they are both responsible for the presentation of the elements. Qt's design is quite different from MVC but the core concept is still there, the representation of the data is separated from the presentation of it. 
