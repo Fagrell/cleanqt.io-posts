@@ -11,9 +11,11 @@ This is the third post in the series "Crash course in Qt for C++ developers" cov
 1. [Events and the main event loop](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-1)
 2. [Meta-object system (including QObject and MOC)](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-2)
 3. Signals and slots - communication between objects
-4. Hierarchy and memory management
-5. MVC or rather model/view and delegate programming
-6. Choose your camp Quick/QML-camp or Widgets-camp
+4. [Hierarchy and memory management](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-4)
+5. [MVC or rather model/view and delegate programming](https://www.cleanqt.io/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-5)
+6. [Choose your camp Quick/QML-camp or Widgets-camp](/blog/crash-course-in-qt-for-c%2B%2B-developers,-part-6)
+7. Qt Quick/QML example
+8. Qt Widgets example
 7. Tooling, e.g. Qt Creator
 8. Remaining good-to-know topics
 9. Where to go from here?
@@ -146,7 +148,9 @@ connect(&domino, &Domino::tumbled, &secondDomino, &Domino::tumbled);
 ```cpp
 connect(sender, SIGNAL(valueChanged(QString, QString)), receiver,  SLOT(updateValue(QString)));
 ```
-* Do you remember the `slots` keyword above? It's actually only necessary to define when using the old `connect()` syntax mentioned in the previous point. The type checking for the old syntax is done at run-time by using type introspection. The MOC  generates the introspection code, but only if the `slots` keyword is defined.
+* Do you remember the `slots` keyword above (when defining the slot-functions)? It's actually only necessary to define when using the old `connect()` syntax mentioned in the previous point. The type checking for the old syntax is done at run-time by using type introspection. The MOC  generates the introspection code, but only if the `slots` keyword is defined.
+
+* If you need to know which signals and slots are connected to a specific object at a certain point in time, you'll find [QObject::dumpObjectInfo()](http://doc.qt.io/qt-5/qobject.html#dumpObjectInfo) very helpful. It's especially useful when debugging since it will output all the inbound and outbound signals for the object.
 
 ### Back to the game architecture
 You might now have a better understanding on how signals and slots can be used to separate the different game components. For example, let's say that we define four components which should be decoupled: the _MouseComponent_, the _UnitComponent_, the _AIComponent_ and lastly the _EnemyComponent_. Furthermore, we'll use signals in each component to communicate and notify the other components. However to solve the separation, we'll have to introduce another component, the _MainController_, which will be used to create all the connections and define the game flow. The _MainController_ will obviously need to depend on the different components, however the components are now well isolated from each other and we've achieved our goal. Do you see how this can be used in a GUI application to separate the visuals and user interaction from the actual logic?
